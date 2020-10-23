@@ -279,7 +279,7 @@ function nextmode(view, next) {
 	let mode = screen.mode
 	let onexit = Screens[screen.type].Modes[mode.type].onexit
 	if (onexit) {
-		view.cmds.push(...onexit(mode))
+		view.cmds.push(...onexit(mode, view))
 	}
 	screen.nextmode = next
 }
@@ -301,7 +301,7 @@ function switchmode(view) {
 	let nextmode = Screens[screen.type].Modes[screen.nextmode].create()
 	let onenter = Screens[screen.type].Modes[screen.nextmode].onenter
 	if (onenter) {
-		view.cmds.push(...onenter(nextmode))
+		view.cmds.push(...onenter(nextmode, view))
 	}
 
 	// switch to new mode

@@ -18,7 +18,10 @@ const onclick = button =>
 // > screen uses cached node to find bounding box for click detects
 const render = (button, view) => {
 	if (!button.node) {
-		let sprite = view.sprites.Button(button.text, button.width)
+		let sprite = view.sprites.Button(button.text, {
+			width: button.width,
+			color: button.onclick ? "black" : "silver"
+		})
 		button.node = { image: sprite }
 	}
 	return button.node

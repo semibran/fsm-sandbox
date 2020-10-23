@@ -12,9 +12,8 @@ const create = _ => ({
 	exit: false
 })
 
-const onenter = (game, view) => {
-	return Home.onenter(game.mode, view)
-}
+const onenter = (game, view) =>
+	Home.onenter(game.mode, view)
 
 const render = (game, view) => {
 	let nodes = []

@@ -13,7 +13,7 @@ export default function normalize(spritesheet) {
 	const Text = (content, style) =>
 		renderText(content, { ...style, font: fonts[style && style.font || "seven"] })
 
-	const Button = (content, width) => renderButton(content, width, sprites)
+	const Button = (content, opts) => renderButton(content, opts, sprites)
 
 	sprites = { Text, Button }
 	return sprites
