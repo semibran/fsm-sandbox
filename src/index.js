@@ -29,21 +29,23 @@ function main(sprites) {
 			presstime: 0,
 			click: false
 		},
+		config: { theme: "white" },
 		screen: null,
 		nextscr: null,
 		comps: [],
 		anims: [],
+		spots: [],
 		cmds: [],
 		nodes: [],
 		time: 0,
 		dirty: false
 	}
 	let gamedata = createGame()
-	transition(view, "Game", gamedata)
+	nextscr(view, "Game", gamedata)
 	mount(view, document.body)
 }
 
-function transition(view, scrtype, ...scrdata) {
+function nextscr(view, scrtype, ...scrdata) {
 	if (view.nextscr) return
 	let sprites = view.sprites
 	let screen = Screens[scrtype].create(...scrdata)
@@ -175,6 +177,15 @@ function mount(view, element) {
 				pointer.click = false
 				return
 			}
+
+			let spot = view.spots.find(spot => spot.abs && contains(scaledpos, spot.abs))
+			if (spot) {
+				let cmds = spot.onclick()
+				if (cmds) view.cmds.push(...cmds)
+				pointer.presspos = null
+				pointer.click = false
+				return
+			}
 		}
 
 		// call screen onrelease hook (blocked if onclick succeeds)
@@ -231,16 +242,25 @@ function resolvecmds(view) {
 	while (view.cmds.length && !view.anims.find(anim => anim.blocking)) {
 		dirty = true
 		let [ ctype, ...cdata ] = view.cmds.shift()
-		if (ctype === "addcomp") {
+		if (ctype === "render") {
+			// dirty flag is already set;
+			// we don't need to do anything extra
+		} else if (ctype === "addcomp") {
 			addcomp(view, ...cdata)
 		} else if (ctype === "removecomp") {
 			removecomp(view, ...cdata)
+		} else if (ctype === "addspot") {
+			addspot(view, ...cdata)
+		} else if (ctype === "removespot") {
+			removespot(view, ...cdata)
 		} else if (ctype === "startanim") {
 			startanim(view, ...cdata)
 		} else if (ctype === "stopanim") {
 			stopanim(view, ...cdata)
 		} else if (ctype === "nextmode") {
 			nextmode(view, ...cdata)
+		} else if (ctype === "setconfig") {
+			setconfig(view, ...cdata)
 		} else {
 			dirty = false
 			console.warn("Warning: No command handler defined for command " + ctype + "."
@@ -248,6 +268,17 @@ function resolvecmds(view) {
 		}
 	}
 	return dirty
+}
+
+function addspot(view, spot) {
+	view.spots.push(spot)
+}
+
+function removespot(view, spot) {
+	let idx = view.spots.indexOf(spot)
+	if (idx >= 0) {
+		view.spots.splice(idx, 1)
+	}
 }
 
 function addcomp(view, comp) {
@@ -272,6 +303,10 @@ function stopanim(view, anim) {
 	if (idx >= 0) {
 		view.anims.splice(idx, 1)
 	}
+}
+
+function setconfig(view, data) {
+	Object.assign(view.config, data)
 }
 
 function nextmode(view, next) {

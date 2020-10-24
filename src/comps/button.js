@@ -5,7 +5,7 @@ const create = (text, opts) => ({
 	text: text,
 	width: opts && opts.width,
 	onclick: opts && opts.onclick,
-	node: null
+	cache: { theme: null, node: null }
 })
 
 // onclick(button) -> cmdlist
@@ -17,10 +17,22 @@ const onclick = button =>
 // > renders a drawable node and saves in component cache.
 // > screen uses cached node to find bounding box for click detects
 const render = (button, view) => {
-	if (!button.node) {
+	if (button.cache.theme !== view.config.theme) {
+		button.cache.theme = view.config.theme
 		let sprite = view.sprites.Button(button.text, {
 			width: button.width,
-			color: button.onclick ? "black" : "silver"
+			color: view.config.theme === "white"
+				? [ 255, 255, 255 ]
+				: button.onclick
+					? [ 255, 255, 255 ]
+					: [ 102, 102, 102 ],
+			fill: view.config.theme === "white"
+				? button.onclick
+					? [ 0, 0, 0 ]
+					: [ 204, 204, 204 ]
+				: button.onclick
+					? [ 102, 102, 102 ]
+					: [ 51, 51, 51 ]
 		})
 		button.node = { image: sprite }
 	}
