@@ -1,3 +1,4 @@
+import * as EaseIn from "../anims/ease-in"
 import * as EaseLinear from "../anims/ease-linear"
 import { create as Canvas } from "../lib/canvas"
 import rgb from "../lib/rgb"
@@ -23,21 +24,25 @@ const create = (label, options, onclick) => ({
 const onenter = (opt, view) => {
 	opt.select = Number(view.config.theme !== "white")
 	opt.cache.image = renderOpt(opt, view)
-	return opt.cache.spots.map(spot => [ "addspot", spot ])
+	opt.anim = EaseIn.create(8)
+	return [ [ "startanim", opt.anim ], ...opt.cache.spots.map(spot => [ "addspot", spot ]) ]
 }
 
-const onexit = opt =>
-	opt.cache.spots.map(spot => [ "removespot", spot ])
+const onexit = opt => {
+	opt.exit = true
+	opt.anim = EaseLinear.create(5)
+	return [ [ "startanim", opt.anim ], ...opt.cache.spots.map(spot => [ "removespot", spot ]) ]
+}
 
 const render = (opt, view) => {
 	let nodes = []
 	let viewport = view.viewport
 
-	let image = opt.cache.image
-	if (opt.cache.select !== opt.select) {
-		opt.cache.select = opt.select
-		opt.cache.image = renderOpt(opt, view)
-	}
+	// let image = opt.cache.image
+	// if (opt.cache.select !== opt.select) {
+	opt.cache.select = opt.select
+	opt.cache.image = renderOpt(opt, view)
+	// }
 
 	let node = {
 		image: opt.cache.image,
@@ -46,7 +51,11 @@ const render = (opt, view) => {
 		origin: "center"
 	}
 
-	if (image !== opt.cache.image) {
+	if (opt.anim && !opt.anim.done) {
+		let t = opt.anim.x
+		if (opt.exit) t = 1 - t
+		node.height = opt.cache.image.height * t
+	} else if (!opt.exit) {
 		for (let spot of opt.cache.spots) {
 			let bbox = bounds(node)
 			spot.abs = {
@@ -58,8 +67,10 @@ const render = (opt, view) => {
 		}
 	}
 
-	opt.node = node
-	nodes.push(node)
+	if (!opt.exit || opt.anim && !opt.anim.done) {
+		nodes.push(node)
+	}
+
 	return nodes
 }
 
