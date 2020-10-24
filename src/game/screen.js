@@ -21,7 +21,7 @@ const render = (game, view) => {
 	let { viewport } = view
 	let bg = Canvas(viewport.width, viewport.height)
 	let bgnode = { image: bg.canvas }
-	bg.fillStyle = view.config.theme
+	bg.fillStyle = view.config.theme === "light" ? "white" : "black"
 	bg.fillRect(0, 0, viewport.width, viewport.height)
 	nodes.push(bgnode)
 

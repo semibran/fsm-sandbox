@@ -21,12 +21,12 @@ const render = (button, view) => {
 		button.cache.theme = view.config.theme
 		let sprite = view.sprites.Button(button.text, {
 			width: button.width,
-			color: view.config.theme === "white"
+			color: view.config.theme === "light"
 				? [ 255, 255, 255 ]
 				: button.onclick
 					? [ 255, 255, 255 ]
 					: [ 102, 102, 102 ],
-			fill: view.config.theme === "white"
+			fill: view.config.theme === "light"
 				? button.onclick
 					? [ 0, 0, 0 ]
 					: [ 204, 204, 204 ]

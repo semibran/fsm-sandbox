@@ -23,7 +23,7 @@ const onenter = (mode, view) => {
 	// 	Button.create("Opt2", { width: 80 }),
 	// 	Button.create("Opt3", { width: 80 })
 	// ])
-	let option = MenuOption.create("BGColor", [ "White", "Black" ], opt => {
+	let option = MenuOption.create("BGColor", [ "Light", "Dark" ], opt => {
 		return [[ "setconfig", { theme: opt.toLowerCase() } ]]
 	})
 

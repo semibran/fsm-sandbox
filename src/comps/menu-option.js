@@ -22,7 +22,7 @@ const create = (label, options, onclick) => ({
 })
 
 const onenter = (opt, view) => {
-	opt.select = Number(view.config.theme !== "white")
+	opt.select = Number(view.config.theme !== "light")
 	opt.cache.image = renderOpt(opt, view)
 	opt.anim = EaseIn.create(8)
 	return [ [ "startanim", opt.anim ], ...opt.cache.spots.map(spot => [ "addspot", spot ]) ]
@@ -78,7 +78,7 @@ const render = (opt, view) => {
 // > FX: caches hotspots in map `opt.spots : idx -> spot`
 const renderOpt = (opt, view) => {
 	let { sprites, viewport } = view
-	let light = view.config.theme === "white"
+	let light = view.config.theme === "light"
 
 	let ctx = Canvas(viewport.width - 32, 12)
 	ctx.fillStyle = light ? rgb(204, 204, 204) : rgb(51, 51, 51)
@@ -122,15 +122,15 @@ const renderOpt = (opt, view) => {
 					let clicked = opt.options[i]
 					return [ ...opt.onclick(clicked), [ "render" ] ]
 				},
-				abs: null,
-				rel: {
-					x: x,
-					y: 2,
-					width: text.width,
-					height: text.height
-				}
+				abs: null
 			}
 		}
+		Object.assign(opt.cache.spots[i], { rel: {
+			x: x,
+			y: 2,
+			width: text.width,
+			height: text.height
+		}})
 		x += text.width + 10
 	}
 

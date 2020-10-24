@@ -24,7 +24,7 @@ const onexit = title => {
 const render = (title, view) => {
 	let viewport = view.viewport
 	let image = view.sprites.Text(title.text, {
-		color: view.config.theme === "white"
+		color: view.config.theme === "light"
 			? [ 0, 0, 0 ]
 			: [ 255, 255, 255 ]
 	})

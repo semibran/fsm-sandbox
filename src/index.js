@@ -29,7 +29,7 @@ function main(sprites) {
 			presstime: 0,
 			click: false
 		},
-		config: { theme: "white" },
+		config: { theme: "light" },
 		screen: null,
 		nextscr: null,
 		comps: [],
